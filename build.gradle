@@ -1,0 +1,26 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.12.2'
+        classpath 'me.champeau.gradle:gradle-groovy-android-plugin:0.3.0'
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+gradle.taskGraph.whenReady {
+    allprojects {
+        tasks.withType(GroovyCompile) { task ->
+            logger.lifecycle("Task $task")
+            task.groovyOptions.forkOptions.jvmArgs=['-noverify']
+        }
+    }
+}

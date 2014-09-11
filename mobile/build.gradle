@@ -1,0 +1,62 @@
+apply plugin: 'com.android.application'
+apply plugin: 'me.champeau.gradle.groovy-android'
+
+android {
+    compileSdkVersion 20
+    buildToolsVersion "20.0.0"
+
+    defaultConfig {
+        applicationId "me.champeau.speakertime"
+        minSdkVersion 14
+        targetSdkVersion 20
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            runProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_6
+        targetCompatibility JavaVersion.VERSION_1_6
+    }
+
+    dexOptions {
+        javaMaxHeapSize "2g"
+    }
+
+    //enforceUniquePackageName=false
+}
+
+repositories {
+    maven {
+        url 'https://repo.spring.io/libs-snapshot'
+    }
+    jcenter()
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project(':shared')
+    wearApp project(':wear')
+    compile 'com.google.android.gms:play-services-wearable:5.0.77'
+    compile 'org.codehaus.groovy:groovy:2.4.0-beta-3:grooid'
+    compile('org.projectreactor:reactor-core:2.0.0.BUILD-SNAPSHOT') {
+        exclude group:'com.goldmansachs'
+        //exclude group:'org.codehaus.groovy'
+    }
+    compile "org.java-websocket:Java-WebSocket:1.3.0"
+    compile 'org.osmdroid:osmdroid-android:4.2'
+    compile('org.osmdroid:osmdroid-third-party:4.2') {
+        exclude group:'android.support'
+        exclude group:'com.google.android.gms'
+    }
+    //compile 'com.android.support:support-v4:20.0.0'
+    compile ('org.codehaus.groovy:groovy-json:2.4.0-beta-3') {
+        transitive = false
+    }
+
+}
