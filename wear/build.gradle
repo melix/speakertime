@@ -18,11 +18,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+}
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_6
-        targetCompatibility JavaVersion.VERSION_1_6
-    }
+repositories {
+    mavenLocal()
 }
 
 dependencies {
@@ -30,5 +29,5 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.google.android.support:wearable:+'
     compile 'com.google.android.gms:play-services-wearable:5.0.77'
-    compile 'org.codehaus.groovy:groovy:2.4.0-beta-3:grooid'
+    compile 'org.codehaus.groovy:groovy:2.4.0-SNAPSHOT:grooid'
 }

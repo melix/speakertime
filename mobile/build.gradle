@@ -19,11 +19,6 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_6
-        targetCompatibility JavaVersion.VERSION_1_6
-    }
-
     dexOptions {
         javaMaxHeapSize "2g"
     }
@@ -35,6 +30,7 @@ repositories {
     maven {
         url 'https://repo.spring.io/libs-snapshot'
     }
+    mavenLocal()
     jcenter()
 }
 
@@ -43,10 +39,10 @@ dependencies {
     compile project(':shared')
     wearApp project(':wear')
     compile 'com.google.android.gms:play-services-wearable:5.0.77'
-    compile 'org.codehaus.groovy:groovy:2.4.0-beta-3:grooid'
+    compile 'org.codehaus.groovy:groovy:2.4.0-SNAPSHOT:grooid'
     compile('org.projectreactor:reactor-core:2.0.0.BUILD-SNAPSHOT') {
         exclude group:'com.goldmansachs'
-        //exclude group:'org.codehaus.groovy'
+        exclude group:'org.codehaus.groovy'
     }
     compile "org.java-websocket:Java-WebSocket:1.3.0"
     compile 'org.osmdroid:osmdroid-android:4.2'
@@ -55,7 +51,7 @@ dependencies {
         exclude group:'com.google.android.gms'
     }
     //compile 'com.android.support:support-v4:20.0.0'
-    compile ('org.codehaus.groovy:groovy-json:2.4.0-beta-3') {
+    compile ('org.codehaus.groovy:groovy-json:2.4.0-SNAPSHOT') {
         transitive = false
     }
 

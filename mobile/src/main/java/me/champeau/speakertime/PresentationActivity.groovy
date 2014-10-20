@@ -18,9 +18,6 @@ import me.champeau.speakertime.support.InjectViews
 import me.champeau.speakertime.support.MessageConstants
 import me.champeau.speakertime.support.ViewById
 import reactor.core.Environment
-import reactor.function.Consumer
-import reactor.rx.action.Action
-import reactor.rx.spec.Streams
 import com.google.android.gms.wearable.Node
 
 @CompileStatic
@@ -28,6 +25,7 @@ import com.google.android.gms.wearable.Node
 class PresentationActivity extends Activity implements GoogleApiProvider {
 
     private final Environment env = new Environment()
+    private final int totalDuration = 45*60*1000
 
     @ViewById(R.id.timer)
     private TextView timerView
@@ -41,29 +39,41 @@ class PresentationActivity extends Activity implements GoogleApiProvider {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_presentation)
+        contentView = R.layout.activity_presentation
 
         createGoogleApi()
         def timer = new PresenterTimer()
         timer.onTick {
+            int elapsed = (int) (100d*(totalDuration-it)/(totalDuration))
             String duration = convertToDuration(it)
             def api = googleApiClient
             Thread.start {
                 Wearable.NodeApi.getConnectedNodes(api).await().nodes.each {
                     def result = Wearable.MessageApi.sendMessage(
-                            api, it.id, MessageConstants.MSG_TIME_LEFT, duration.bytes).await()
+                            api, it.id, MessageConstants.MSG_TIME_LEFT, "$duration;$elapsed".bytes).await()
                     if (!result.status.success) {
                         Log.e("PresentationActivity", "ERROR: failed to send Message: ${result.status}")
                     }
                 }
             }
             runOnUiThread {
-                timerView.setText(duration)
+                timerView.text = duration
             }
         }
         injectViews()
         startButton.onClickListener = {
             timer.start()
+            def api = googleApiClient
+            Thread.start {
+                Wearable.NodeApi.getConnectedNodes(api).await().nodes.each {
+                    def result = Wearable.MessageApi.sendMessage(
+                            api, it.id, MessageConstants.START_WEAR_ACTIVITY, MessageConstants.EMPTY_MESSAGE).await()
+                    if (!result.status.success) {
+                        Log.e("PresentationActivity", "ERROR: failed to send Message: ${result.status}")
+                    }
+                }
+            }
+
         }
         stopButton.onClickListener = {
             timer.cancel()

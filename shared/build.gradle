@@ -1,8 +1,12 @@
 apply plugin: 'android-library'
 apply plugin: 'me.champeau.gradle.groovy-android'
 
+repositories {
+    mavenLocal()
+}
+
 dependencies {
-    compile 'org.codehaus.groovy:groovy:2.4.0-beta-3:grooid'
+    compile 'org.codehaus.groovy:groovy:2.4.0-SNAPSHOT:grooid'
     compile 'com.google.android.gms:play-services-wearable:5.0.77'
 }
 

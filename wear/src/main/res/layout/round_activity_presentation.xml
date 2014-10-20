@@ -4,13 +4,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".PresentationActivity"
-    tools:deviceIds="wear_round">
+    tools:deviceIds="wear_round"
+    android:background="@color/white">
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:src="@drawable/groovy_logo"
+        android:contentDescription="Groovy logo"/>
+
+    <me.champeau.speakertime.TimeLeftView
+        android:id="@+id/timeleftView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
 
     <TextView
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="170dp"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="@string/hello_round" />
+        android:text="@string/hello_round"
+        android:background="@color/dark_blue"/>
+
 </RelativeLayout>

@@ -26,7 +26,7 @@ import org.osmdroid.views.overlay.compass.CompassOverlay
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider
 import reactor.core.Environment
 import reactor.rx.Stream
-import reactor.rx.spec.Streams
+import reactor.rx.Streams
 
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
@@ -100,7 +100,7 @@ class ReactiveActivity extends Activity {
     }
 
     void connectWebSocket() {
-        def stream = Streams.defer(0d)
+        def stream = Streams.defer([0d])
 
         stream.map{
             whereAmIRequestId(0d,0d)

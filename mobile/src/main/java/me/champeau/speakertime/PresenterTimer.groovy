@@ -9,7 +9,7 @@ import groovy.transform.stc.SimpleType
 @CompileStatic
 class PresenterTimer extends CountDownTimer {
 
-    private static final long DEFAULT_TIMER = 90*60*1000
+    private static final long DEFAULT_TIMER = 45*60*1000
 
     private final List<Closure> onTickListeners = []
     private final List<Closure> onFinishListeners = []
