@@ -24,7 +24,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="170dp"
         android:layout_centerHorizontal="true"
-        android:text="@string/hello_round"
-        android:background="@color/dark_blue"/>
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:text=""
+        android:background="@color/white"/>
 
 </RelativeLayout>

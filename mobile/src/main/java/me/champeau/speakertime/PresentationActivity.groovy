@@ -44,7 +44,7 @@ class PresentationActivity extends Activity implements GoogleApiProvider {
         createGoogleApi()
         def timer = new PresenterTimer()
         timer.onTick {
-            int elapsed = (int) (100d*(totalDuration-it)/(totalDuration))
+            double elapsed = (double) (100d*(totalDuration-it)/(totalDuration))
             String duration = convertToDuration(it)
             def api = googleApiClient
             Thread.start {
@@ -63,23 +63,29 @@ class PresentationActivity extends Activity implements GoogleApiProvider {
         injectViews()
         startButton.onClickListener = {
             timer.start()
-            def api = googleApiClient
-            Thread.start {
-                Wearable.NodeApi.getConnectedNodes(api).await().nodes.each {
-                    def result = Wearable.MessageApi.sendMessage(
-                            api, it.id, MessageConstants.START_WEAR_ACTIVITY, MessageConstants.EMPTY_MESSAGE).await()
-                    if (!result.status.success) {
-                        Log.e("PresentationActivity", "ERROR: failed to send Message: ${result.status}")
-                    }
-                }
-            }
-
         }
         stopButton.onClickListener = {
             timer.cancel()
+            cancelNotifications(false)
         }
         //startActivity new Intent(this, ReactiveActivity)
 
+    }
+
+    private void cancelNotifications(boolean close) {
+        def api = googleApiClient
+        Thread.start {
+            Wearable.NodeApi.getConnectedNodes(api).await().nodes.each {
+                def result = Wearable.MessageApi.sendMessage(
+                        api, it.id, MessageConstants.STOP_WEAR_ACTIVITY, MessageConstants.EMPTY_MESSAGE).await()
+                if (!result.status.success) {
+                    Log.e("PresentationActivity", "ERROR: failed to send Message: ${result.status}")
+                }
+            }
+            if (close) {
+                disconnectGoogleApi()
+            }
+        }
     }
 
     @Override
@@ -91,7 +97,7 @@ class PresentationActivity extends Activity implements GoogleApiProvider {
     @Override
     protected void onStop() {
         super.onStop()
-        disconnectGoogleApi()
+        cancelNotifications(true)
     }
 
     @Override

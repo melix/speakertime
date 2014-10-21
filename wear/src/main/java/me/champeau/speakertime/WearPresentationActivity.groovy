@@ -16,7 +16,6 @@ class WearPresentationActivity extends Activity implements GoogleApiProvider, Me
 
     private TextView mTextView
     private TimeLeftView timeleftView
-    private int lastElapsed = -1
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,17 +47,11 @@ class WearPresentationActivity extends Activity implements GoogleApiProvider, Me
             runOnUiThread {
                 String[] data = new String(messageEvent.data).split(';')
                 String timeLeft = data[0]
-                int elapsed = Integer.valueOf(data[1])
+                double elapsed = Double.valueOf(data[1])
 
                 mTextView.text = timeLeft
                 timeleftView.elapsedPercent = elapsed
-                if (lastElapsed!=((int) (elapsed/10))) {
-                    Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE)
-                    vibrator.vibrate(Math.min(200, 20*elapsed))
-                }
-                lastElapsed = (int) elapsed/10
             }
         }
-        //Log.d("PresentationActivityWear", "Received message: Path ${messageEvent.path}")
     }
 }
