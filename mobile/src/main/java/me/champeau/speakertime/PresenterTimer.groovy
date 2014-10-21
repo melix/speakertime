@@ -9,13 +9,11 @@ import groovy.transform.stc.SimpleType
 @CompileStatic
 class PresenterTimer extends CountDownTimer {
 
-    private static final long DEFAULT_TIMER = 45*60*1000
-
     private final List<Closure> onTickListeners = []
     private final List<Closure> onFinishListeners = []
 
-    PresenterTimer() {
-        super(DEFAULT_TIMER, 1000)
+    PresenterTimer(long duration) {
+        super(duration, 1000)
     }
 
     @Override

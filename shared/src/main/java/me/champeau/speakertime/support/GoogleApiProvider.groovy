@@ -1,20 +1,20 @@
 package me.champeau.speakertime.support
 
+import android.content.Context
 import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.common.api.PendingResult
 import com.google.android.gms.wearable.MessageApi
 import com.google.android.gms.wearable.Wearable
-import android.content.Context
 import groovy.transform.CompileStatic
 
 @CompileStatic
-trait GoogleApiProvider {
+trait GoogleApiProvider
+{
     GoogleApiClient googleApiClient
 
     Object me() { this }
 
     void createGoogleApi() {
-        googleApiClient = new GoogleApiClient.Builder((Context)me())
+        googleApiClient = new GoogleApiClient.Builder((Context) me())
                 .addApi(Wearable.API)
                 .build()
 

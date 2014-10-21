@@ -41,46 +41,46 @@ class TimerActivityListener extends WearableListenerService {
         String timeLeft = data[0]
         double elapsed = Double.valueOf(data[1])
         int rounded = (int) elapsed
+        if (lastElapsedVibrate==-1 || timeLeft.endsWith(':0')) {
+            Intent viewIntent = new Intent(this, WearPresentationActivity)
 
-        Intent viewIntent = new Intent(this, WearPresentationActivity)
+            PendingIntent viewPendingIntent =
+                    PendingIntent.getActivity(
+                            this,
+                            0,
+                            viewIntent,
+                            PendingIntent.FLAG_UPDATE_CURRENT)
 
-        PendingIntent viewPendingIntent =
-                PendingIntent.getActivity(
-                        this,
-                        0,
-                        viewIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT)
-
-        def bigStyle = new NotificationCompat.BigTextStyle()
-        bigStyle.bigText """Time left for your presentation: $timeLeft
+            def bigStyle = new NotificationCompat.BigTextStyle()
+            bigStyle.bigText """Time left for your presentation: $timeLeft
 Elapsed time: ${rounded}%)
 """
 
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_action_alarms)
-                        .setLargeIcon(cachedBitmap)
-                        .setContentTitle('Time left')
-                        .setContentText("$timeLeft (Elapsed: ${rounded}%)")
-                        .setContentIntent(viewPendingIntent)
-                        .setOngoing(true)
-                        .setStyle(bigStyle)
+            NotificationCompat.Builder notificationBuilder =
+                    new NotificationCompat.Builder(this)
+                            .setSmallIcon(R.drawable.ic_action_alarms)
+                            .setLargeIcon(cachedBitmap)
+                            .setContentTitle('Time left')
+                            .setContentText("$timeLeft (Elapsed: ${rounded}%)")
+                            .setContentIntent(viewPendingIntent)
+                            .setOngoing(true)
+                            .setStyle(bigStyle)
 
-        if (((int)(rounded/10))!=lastElapsedVibrate) {
-            lastElapsedVibrate = (int) (rounded/10)
-            long[] pattern = new long[lastElapsedVibrate+1]
-            for (int i=0;i<pattern.length;i++) {
-                pattern[i] = 100*(i+1)
+            if (((int) (rounded / 10)) != lastElapsedVibrate) {
+                lastElapsedVibrate = (int) (rounded / 10)
+                long[] pattern = new long[lastElapsedVibrate + 1]
+                for (int i = 0; i < pattern.length; i++) {
+                    pattern[i] = 100 * (i + 1)
+                }
+                notificationBuilder.vibrate = pattern
             }
-            notificationBuilder.vibrate = pattern
+
+            // Get an instance of the NotificationManager service
+            NotificationManagerCompat notificationManager =
+                    NotificationManagerCompat.from(this)
+
+            // Build the notification and issues it with notification manager.
+            notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
         }
-
-
-        // Get an instance of the NotificationManager service
-        NotificationManagerCompat notificationManager =
-                NotificationManagerCompat.from(this)
-
-        // Build the notification and issues it with notification manager.
-        notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
     }
 }

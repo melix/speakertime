@@ -1,8 +1,12 @@
 package me.champeau.speakertime
 
 import android.app.Activity
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
+import android.support.v4.content.LocalBroadcastManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -22,10 +26,21 @@ import com.google.android.gms.wearable.Node
 
 @CompileStatic
 @InjectViews
-class PresentationActivity extends Activity implements GoogleApiProvider {
+class PresentationActivity extends Activity {
 
     private final Environment env = new Environment()
-    private final int totalDuration = 45*60*1000
+
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        void onReceive(Context context, Intent intent) {
+            if (intent.action==CountDownService.TICK) {
+                String duration = Utils.convertToDuration(intent.getLongExtra(CountDownService.TIME_LEFT,0))
+                runOnUiThread {
+                    timerView.text = duration
+                }
+            }
+        }
+    }
 
     @ViewById(R.id.timer)
     private TextView timerView
@@ -40,64 +55,33 @@ class PresentationActivity extends Activity implements GoogleApiProvider {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState)
         contentView = R.layout.activity_presentation
-
-        createGoogleApi()
-        def timer = new PresenterTimer()
-        timer.onTick {
-            double elapsed = (double) (100d*(totalDuration-it)/(totalDuration))
-            String duration = convertToDuration(it)
-            def api = googleApiClient
-            Thread.start {
-                Wearable.NodeApi.getConnectedNodes(api).await().nodes.each {
-                    def result = Wearable.MessageApi.sendMessage(
-                            api, it.id, MessageConstants.MSG_TIME_LEFT, "$duration;$elapsed".bytes).await()
-                    if (!result.status.success) {
-                        Log.e("PresentationActivity", "ERROR: failed to send Message: ${result.status}")
-                    }
-                }
-            }
-            runOnUiThread {
-                timerView.text = duration
-            }
-        }
+        def intent = new Intent(this, CountDownService)
+        startService(intent)
         injectViews()
+
         startButton.onClickListener = {
-            timer.start()
+            def st = new Intent()
+            st.action = CountDownService.START_TIMER
+            sendBroadcast(st)
         }
         stopButton.onClickListener = {
-            timer.cancel()
-            cancelNotifications(false)
+            def st = new Intent()
+            st.action = CountDownService.STOP_TIMER
+            sendBroadcast(st)
         }
-        //startActivity new Intent(this, ReactiveActivity)
 
-    }
-
-    private void cancelNotifications(boolean close) {
-        def api = googleApiClient
-        Thread.start {
-            Wearable.NodeApi.getConnectedNodes(api).await().nodes.each {
-                def result = Wearable.MessageApi.sendMessage(
-                        api, it.id, MessageConstants.STOP_WEAR_ACTIVITY, MessageConstants.EMPTY_MESSAGE).await()
-                if (!result.status.success) {
-                    Log.e("PresentationActivity", "ERROR: failed to send Message: ${result.status}")
-                }
-            }
-            if (close) {
-                disconnectGoogleApi()
-            }
-        }
+        registerReceiver(receiver, new IntentFilter(CountDownService.TICK))
     }
 
     @Override
-    protected void onStart() {
-        super.onStart()
-        connectGoogleApi()
+    protected void onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(receiver)
     }
 
     @Override
-    protected void onStop() {
-        super.onStop()
-        cancelNotifications(true)
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent)
     }
 
     @Override
@@ -118,14 +102,4 @@ class PresentationActivity extends Activity implements GoogleApiProvider {
         }
         return super.onOptionsItemSelected(item)
     }
-
-    private static String convertToDuration(long millis) {
-        long seconds = (long) millis / 1000L
-        long s = seconds % 60
-        long m = ((long) (seconds / 60)) % 60
-        long h = ((long) (seconds / 3600L)) % 24
-        "$h:$m:$s"
-    }
-
-
 }
