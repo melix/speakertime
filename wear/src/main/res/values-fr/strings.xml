@@ -4,6 +4,6 @@
     <string name="app_name">SpeakerTime</string>
     <string name="hello_round">Hello Round World!</string>
     <string name="hello_square">Hello Square World!</string>
-    <string name="launch_presentation">presentation</string>
+    <string name="launch_presentation">Présentation</string>
 
 </resources>

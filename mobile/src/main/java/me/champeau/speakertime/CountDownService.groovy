@@ -45,6 +45,19 @@ public class CountDownService extends Service implements GoogleApiProvider {
         filter.addAction(START_TIMER)
         filter.addAction(STOP_TIMER)
         registerReceiver(receiver, filter)
+
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        super.onStartCommand(intent, flags, startId)
+
+        def duration = intent.getLongExtra(PresentationActivity.DURATION, 0)
+        if (duration) {
+            totalDuration = (int) duration
+        }
+
+        START_REDELIVER_INTENT
     }
 
     @Override
@@ -57,31 +70,7 @@ public class CountDownService extends Service implements GoogleApiProvider {
     protected void onHandleIntent(Intent intent) {
         switch (intent.action) {
             case START_TIMER:
-                if (timer) {
-                    timer.cancel()
-                    cancelNotification()
-                }
-                timer = new PresenterTimer(totalDuration)
-                timer.onTick {
-                    String duration = Utils.convertToDuration(it)
-                    double elapsed = (double) (100d * (totalDuration - it) / totalDuration)
-
-                    Thread.start {
-                        nodeIds.each { n ->
-                            def result = Wearable.MessageApi.sendMessage(
-                                    googleApiClient, n, MessageConstants.MSG_TIME_LEFT, "$duration;$elapsed".bytes).await()
-                            if (!result.status.success) {
-                                Log.e("GoogleAplProvider", "ERROR: failed to send Message: ${result.status}")
-                            }
-                        }
-                    }
-                }
-                timer.onTick {
-                    def resultIntent = new Intent(TICK)
-                    resultIntent.putExtra(TIME_LEFT, it)
-                    sendBroadcast(resultIntent)
-                }
-                timer.start()
+                startTimer()
                 break
             case STOP_TIMER:
                 if (timer) {
@@ -90,6 +79,34 @@ public class CountDownService extends Service implements GoogleApiProvider {
                 cancelNotification()
                 break
         }
+    }
+
+    private void startTimer() {
+        if (timer) {
+            timer.cancel()
+            cancelNotification()
+        }
+        timer = new PresenterTimer(totalDuration)
+        timer.onTick {
+            String duration = Utils.convertToDuration(it)
+            double elapsed = (double) (100d * (totalDuration - it) / totalDuration)
+
+            Thread.start {
+                nodeIds.each { n ->
+                    def result = Wearable.MessageApi.sendMessage(
+                            googleApiClient, n, MessageConstants.MSG_TIME_LEFT, "$duration;$elapsed".bytes).await()
+                    if (!result.status.success) {
+                        Log.e("GoogleAplProvider", "ERROR: failed to send Message: ${result.status}")
+                    }
+                }
+            }
+        }
+        timer.onTick {
+            def resultIntent = new Intent(TICK)
+            resultIntent.putExtra(TIME_LEFT, it)
+            sendBroadcast(resultIntent)
+        }
+        timer.start()
     }
 
     private void cancelNotification() {

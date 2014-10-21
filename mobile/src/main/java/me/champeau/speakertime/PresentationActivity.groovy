@@ -28,6 +28,8 @@ import com.google.android.gms.wearable.Node
 @InjectViews
 class PresentationActivity extends Activity {
 
+    public static final String DURATION = "duration"
+
     private final Environment env = new Environment()
 
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -55,8 +57,14 @@ class PresentationActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState)
         contentView = R.layout.activity_presentation
-        def intent = new Intent(this, CountDownService)
-        startService(intent)
+        def startServiceIntent = new Intent(this, CountDownService)
+
+        def duration = intent?.getLongExtra(DURATION, 0)
+        if (duration) {
+            startServiceIntent.putExtra(DURATION, duration)
+        }
+
+        startService(startServiceIntent)
         injectViews()
 
         startButton.onClickListener = {
@@ -71,17 +79,18 @@ class PresentationActivity extends Activity {
         }
 
         registerReceiver(receiver, new IntentFilter(CountDownService.TICK))
+
+        if (duration) {
+            def st = new Intent()
+            st.action = CountDownService.START_TIMER
+            sendBroadcast(st)
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy()
         unregisterReceiver(receiver)
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent)
     }
 
     @Override
