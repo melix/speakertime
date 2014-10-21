@@ -2,6 +2,8 @@ package me.champeau.speakertime
 
 import android.app.PendingIntent
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
 import com.google.android.gms.wearable.MessageEvent
@@ -14,6 +16,7 @@ class TimerActivityListener extends WearableListenerService {
 
     private int NOTIFICATION_ID = 0
     private int lastElapsedVibrate = -1
+    private @Lazy Bitmap cachedBitmap = BitmapFactory.decodeResource(resources, R.drawable.speaker)
 
     @Override
     void onMessageReceived(MessageEvent messageEvent) {
@@ -48,13 +51,20 @@ class TimerActivityListener extends WearableListenerService {
                         viewIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT)
 
+        def bigStyle = new NotificationCompat.BigTextStyle()
+        bigStyle.bigText """Time left for your presentation: $timeLeft
+Elapsed time: ${rounded}%)
+"""
+
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_action_alarms)
+                        .setLargeIcon(cachedBitmap)
                         .setContentTitle('Time left')
                         .setContentText("$timeLeft (Elapsed: ${rounded}%)")
                         .setContentIntent(viewPendingIntent)
                         .setOngoing(true)
+                        .setStyle(bigStyle)
 
         if (((int)(rounded/10))!=lastElapsedVibrate) {
             lastElapsedVibrate = (int) (rounded/10)
