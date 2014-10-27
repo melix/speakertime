@@ -27,9 +27,6 @@ android {
 }
 
 repositories {
-    maven {
-        url 'https://repo.spring.io/libs-snapshot'
-    }
     mavenLocal()
     jcenter()
 }
@@ -40,11 +37,6 @@ dependencies {
     wearApp project(':wear')
     compile 'com.google.android.gms:play-services-wearable:5.0.77'
     compile 'org.codehaus.groovy:groovy:2.4.0-SNAPSHOT:grooid'
-    compile('org.projectreactor:reactor-core:2.0.0.BUILD-SNAPSHOT') {
-        exclude group:'com.goldmansachs'
-        exclude group:'org.codehaus.groovy'
-    }
-    compile "org.java-websocket:Java-WebSocket:1.3.0"
     compile 'org.osmdroid:osmdroid-android:4.2'
     compile('org.osmdroid:osmdroid-third-party:4.2') {
         exclude group:'android.support'

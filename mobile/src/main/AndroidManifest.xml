@@ -51,11 +51,6 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity
-            android:name="me.champeau.speakertime.ReactiveActivity"
-            android:label="@string/title_activity_reactive" >
-        </activity>
-
         <service
             android:name="me.champeau.speakertime.CountDownService"
             android:enabled="true"

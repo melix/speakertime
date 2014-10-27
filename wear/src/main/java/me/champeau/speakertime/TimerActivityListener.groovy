@@ -58,13 +58,15 @@ Elapsed time: ${rounded}%)
 
             NotificationCompat.Builder notificationBuilder =
                     new NotificationCompat.Builder(this)
-                            .setSmallIcon(R.drawable.ic_action_alarms)
-                            .setLargeIcon(cachedBitmap)
-                            .setContentTitle('Time left')
-                            .setContentText("$timeLeft (Elapsed: ${rounded}%)")
-                            .setContentIntent(viewPendingIntent)
-                            .setOngoing(true)
-                            .setStyle(bigStyle)
+            notificationBuilder.with {
+                smallIcon = R.drawable.ic_action_alarms
+                largeIcon = cachedBitmap
+                contentTitle = 'Time left'
+                contentText = "$timeLeft (Elapsed: ${rounded}%)"
+                contentIntent = viewPendingIntent
+                ongoing = true
+                style = bigStyle
+            }
 
             if (((int) (rounded / 10)) != lastElapsedVibrate) {
                 lastElapsedVibrate = (int) (rounded / 10)
