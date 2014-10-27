@@ -6,21 +6,12 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:0.12.2'
-        classpath 'me.champeau.gradle:gradle-groovy-android-plugin:0.3.0'
+        classpath 'me.champeau.gradle:gradle-groovy-android-plugin:0.3.2'
     }
 }
 
 allprojects {
     repositories {
         jcenter()
-    }
-}
-
-gradle.taskGraph.whenReady {
-    allprojects {
-        tasks.withType(GroovyCompile) { task ->
-            logger.lifecycle("Task $task")
-            task.groovyOptions.forkOptions.jvmArgs=['-noverify']
-        }
     }
 }

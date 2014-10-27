@@ -1,6 +1,17 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.champeau.gradle.groovy-android'
 
+androidGroovy {
+    options {
+        targetCompatibility = '1.6'
+        sourceCompatibility = '1.6'
+        configure(groovyOptions) {
+            encoding = 'UTF-8'
+            forkOptions.jvmArgs = ['-noverify']
+        }
+    }
+}
+
 android {
     compileSdkVersion 20
     buildToolsVersion "20.0.0"

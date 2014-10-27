@@ -1,4 +1,4 @@
-apply plugin: 'android-library'
+apply plugin: 'com.android.library'
 apply plugin: 'me.champeau.gradle.groovy-android'
 
 repositories {
@@ -8,6 +8,17 @@ repositories {
 dependencies {
     compile 'org.codehaus.groovy:groovy:2.4.0-SNAPSHOT:grooid'
     compile 'com.google.android.gms:play-services-wearable:5.0.77'
+}
+
+androidGroovy {
+    options {
+        targetCompatibility = '1.6'
+        sourceCompatibility = '1.6'
+        configure(groovyOptions) {
+            encoding = 'UTF-8'
+            forkOptions.jvmArgs = ['-noverify']
+        }
+    }
 }
 
 android {
