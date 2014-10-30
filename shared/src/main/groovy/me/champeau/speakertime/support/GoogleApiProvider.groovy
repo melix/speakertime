@@ -5,16 +5,15 @@ import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.wearable.MessageApi
 import com.google.android.gms.wearable.Wearable
 import groovy.transform.CompileStatic
+import groovy.transform.SelfType
 
 @CompileStatic
-trait GoogleApiProvider
-{
+@SelfType(Context)
+trait GoogleApiProvider {
     GoogleApiClient googleApiClient
 
-    Object me() { this }
-
     void createGoogleApi() {
-        googleApiClient = new GoogleApiClient.Builder((Context) me())
+        googleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .build()
 
