@@ -1,0 +1,4 @@
+moduleName=grooid-module
+moduleVersion=0.1
+extensionClasses=me.champeau.speakertime.extensions.ContextGroovyMethods
+staticExtensionClasses=

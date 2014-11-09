@@ -7,7 +7,7 @@ repositories {
 
 dependencies {
     compile 'org.codehaus.groovy:groovy:2.4.0-SNAPSHOT:grooid'
-    compile 'com.google.android.gms:play-services-wearable:5.0.77'
+    compile 'com.google.android.support:wearable:+'
 }
 
 androidGroovy {
@@ -24,9 +24,4 @@ androidGroovy {
 android {
     compileSdkVersion 20
     buildToolsVersion "20.0.0"
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_6
-        targetCompatibility JavaVersion.VERSION_1_6
-    }
 }

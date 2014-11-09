@@ -1,4 +1,4 @@
-package me.champeau.speakertime.support
+package me.champeau.speakertime.extensions
 
 import android.app.Notification
 import android.app.PendingIntent
@@ -32,7 +32,7 @@ class ContextGroovyMethods {
         PendingIntent.getActivity(self, requestCode, intent, flags)
     }
 
-    static NotificationCompat.BigTextStyle bigTextStyle(Context self, @DelegatesTo(Notification.BigTextStyle) Closure styleSpec) {
+    static NotificationCompat.BigTextStyle bigTextStyle(Context self, @DelegatesTo(NotificationCompat.BigTextStyle) Closure styleSpec) {
         def bigStyle = new NotificationCompat.BigTextStyle()
         bigStyle.with(styleSpec)
         bigStyle

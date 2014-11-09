@@ -1,6 +1,5 @@
 package me.champeau.speakertime
 
-import android.app.Presentation
 import android.os.CountDownTimer
 import groovy.transform.CompileStatic
 import groovy.transform.stc.ClosureParams

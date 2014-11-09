@@ -54,13 +54,13 @@ class TimerActivityListener extends WearableListenerService {
 Elapsed time: ${rounded}%)
 """
                 }
-                if (((int) (rounded / 10)) != lastElapsedVibrate) {
-                    lastElapsedVibrate = (int) (rounded / 10)
-                    long[] pattern = new long[lastElapsedVibrate + 1]
-                    for (int i = 0; i < pattern.length; i++) {
-                        pattern[i] = 100 * (i + 1)
-                    }
-                    vibrate = pattern
+
+                int elapsedVibrate = (int) (rounded / 10)
+                if (elapsedVibrate != lastElapsedVibrate) {
+                    lastElapsedVibrate = elapsedVibrate
+                    vibrate = (1..lastElapsedVibrate+1).collect {
+                        [100*it, 100*it]
+                    }.flatten() as long[]
                 }
             }
         }

@@ -37,6 +37,7 @@ repositories {
 
 dependencies {
     compile project(':shared')
+    compile project(':extensions')
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.google.android.support:wearable:+'
     compile 'com.google.android.gms:play-services-wearable:5.0.77'
