@@ -8,6 +8,7 @@ repositories {
 dependencies {
     compile 'org.codehaus.groovy:groovy:2.4.0-SNAPSHOT:grooid'
     compile 'com.google.android.gms:play-services-wearable:5.0.77'
+    compile 'com.google.android.support:wearable:+'
 }
 
 androidGroovy {

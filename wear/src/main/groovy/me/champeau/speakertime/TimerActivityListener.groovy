@@ -20,19 +20,18 @@ class TimerActivityListener extends WearableListenerService {
 
     @Override
     void onMessageReceived(MessageEvent messageEvent) {
-        String path = messageEvent.path
-        if (MessageConstants.MSG_TIME_LEFT==path) {
-            updateNotification(messageEvent)
-        } else if (MessageConstants.STOP_WEAR_ACTIVITY==path) {
-            cancelNotification()
+        switch (messageEvent.path) {
+            case MessageConstants.MSG_TIME_LEFT:
+                updateNotification(messageEvent)
+                break
+            case MessageConstants.STOP_WEAR_ACTIVITY:
+                cancelNotification()
+                break
         }
     }
 
     private void cancelNotification() {
-        NotificationManagerCompat notificationManager =
-                NotificationManagerCompat.from(this)
-
-        notificationManager.cancel(NOTIFICATION_ID)
+        compatNotificationManager.cancel(NOTIFICATION_ID)
         lastElapsedVibrate = -1
     }
 
@@ -42,47 +41,28 @@ class TimerActivityListener extends WearableListenerService {
         double elapsed = Double.valueOf(data[1])
         int rounded = (int) elapsed
         if (lastElapsedVibrate==-1 || timeLeft.endsWith(':0')) {
-            Intent viewIntent = new Intent(this, WearPresentationActivity)
-
-            PendingIntent viewPendingIntent =
-                    PendingIntent.getActivity(
-                            this,
-                            0,
-                            viewIntent,
-                            PendingIntent.FLAG_UPDATE_CURRENT)
-
-            def bigStyle = new NotificationCompat.BigTextStyle()
-            bigStyle.bigText """Time left for your presentation: $timeLeft
-Elapsed time: ${rounded}%)
-"""
-
-            NotificationCompat.Builder notificationBuilder =
-                    new NotificationCompat.Builder(this)
-            notificationBuilder.with {
+            // Build the notification and issues it with notification manager.
+            notify(NOTIFICATION_ID) {
                 smallIcon = R.drawable.ic_action_alarms
                 largeIcon = cachedBitmap
                 contentTitle = 'Time left'
                 contentText = "$timeLeft (Elapsed: ${rounded}%)"
-                contentIntent = viewPendingIntent
+                contentIntent = pendingActivityIntent(0, intent(WearPresentationActivity), PendingIntent.FLAG_UPDATE_CURRENT)
                 ongoing = true
-                style = bigStyle
-            }
-
-            if (((int) (rounded / 10)) != lastElapsedVibrate) {
-                lastElapsedVibrate = (int) (rounded / 10)
-                long[] pattern = new long[lastElapsedVibrate + 1]
-                for (int i = 0; i < pattern.length; i++) {
-                    pattern[i] = 100 * (i + 1)
+                style = bigTextStyle {
+                    bigText """Time left for your presentation: $timeLeft
+Elapsed time: ${rounded}%)
+"""
                 }
-                notificationBuilder.vibrate = pattern
+                if (((int) (rounded / 10)) != lastElapsedVibrate) {
+                    lastElapsedVibrate = (int) (rounded / 10)
+                    long[] pattern = new long[lastElapsedVibrate + 1]
+                    for (int i = 0; i < pattern.length; i++) {
+                        pattern[i] = 100 * (i + 1)
+                    }
+                    vibrate = pattern
+                }
             }
-
-            // Get an instance of the NotificationManager service
-            NotificationManagerCompat notificationManager =
-                    NotificationManagerCompat.from(this)
-
-            // Build the notification and issues it with notification manager.
-            notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
         }
     }
 }
