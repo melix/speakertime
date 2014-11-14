@@ -26,7 +26,7 @@
         android:layout_centerHorizontal="true"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:text=""
+        android:text="0:13:37"
         android:textColor="@color/black"
         android:background="@color/white"/>
 

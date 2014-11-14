@@ -1,5 +1,6 @@
 package me.champeau.speakertime.extensions
 
+import android.app.Activity
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
@@ -40,6 +41,17 @@ class ContextGroovyMethods {
 
     static Intent intent(Context self, Class<?> clazz) {
         new Intent(self, clazz)
+    }
+
+    static void startActivity(Context self,
+                              Class<? extends Activity> activity,
+                              @DelegatesTo(value=Intent, strategy = Closure.DELEGATE_FIRST) Closure intentSpec) {
+        def intent = new Intent(self, activity)
+        def clone = (Closure) intentSpec.clone()
+        clone.resolveStrategy = Closure.DELEGATE_FIRST
+        clone.delegate = intent
+        clone()
+        self.startActivity(intent)
     }
 
 }

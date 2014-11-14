@@ -16,7 +16,7 @@ class TimeLeftView extends View {
     private Paint elapsedTimePaint
     private float cx, cy, radius
 
-    double elapsedPercent = 0
+    double elapsedPercent = 42
 
     TimeLeftView(Context context) {
         super(context)
