@@ -32,7 +32,7 @@ android {
 }
 
 repositories {
-    mavenLocal()
+    jcenter()
 }
 
 dependencies {
@@ -41,5 +41,5 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.google.android.support:wearable:+'
     compile 'com.google.android.gms:play-services-wearable:5.0.77'
-    compile 'org.codehaus.groovy:groovy:2.4.0-SNAPSHOT:grooid'
+    compile 'org.codehaus.groovy:groovy:2.4.0-beta-4:grooid'
 }
