@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
-apply plugin: 'me.champeau.gradle.groovy-android'
+apply plugin: 'groovyx.grooid.groovy-android'
 
 repositories {
     jcenter()
 }
 
 dependencies {
-    compile 'org.codehaus.groovy:groovy:2.4.0-beta-4:grooid'
+    compile "org.codehaus.groovy:groovy:$groovyVersion:grooid"
     compile 'com.android.support:support-v4:20.0.0'
 }
 
