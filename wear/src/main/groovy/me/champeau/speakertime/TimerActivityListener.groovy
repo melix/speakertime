@@ -54,14 +54,6 @@ class TimerActivityListener extends WearableListenerService {
 Elapsed time: ${rounded}%)
 """
                 }
-
-                int elapsedVibrate = (int) (rounded / 10)
-                if (elapsedVibrate != lastElapsedVibrate) {
-                    lastElapsedVibrate = elapsedVibrate
-                    vibrate = (1..lastElapsedVibrate+1).collect {
-                        [100*it, 100*it]
-                    }.flatten() as long[]
-                }
             }
         }
     }
