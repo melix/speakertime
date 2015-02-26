@@ -9,6 +9,37 @@ import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
 import groovy.transform.CompileStatic
 
+/**
+ * <p>This class adds several methods to the {@link Context} class. By doing this we can provide two
+ * major improvements:</p>
+ * <ul>
+ *    <li>API becomes much easier to use by doing things like getting the notification manager transparently</li>
+ *    <li>limits the use of the v4 NotificationCompat API to this class</li>
+ * </ul>
+ * <p>
+ * In particular, if someone decides to use the standard API instead of the compatibility one, this class
+ * is the only one which will need updates. Code using this API will not have to change.</p>
+ *
+ * <p>For example, sending a notification only requires the following code:</p>
+ *
+ * <pre><code>
+ *     notify(NOTIFICATION_ID) {
+ *        smallIcon = R.drawable.ic_action_alarms
+ *        largeIcon = cachedBitmap
+ *        contentTitle = 'Title'
+ *        contentText = "Content text"
+ *        contentIntent = pendingActivityIntent(0, intent(OtherActivity), PendingIntent.FLAG_UPDATE_CURRENT)
+ *        ongoing = true
+ *        style = bigTextStyle {
+ *        bigText """
+ *          SOME BIG TEXT
+ *        """
+ * }
+ *     }
+ * </code></pre>
+ *
+ * @author Cédric Champeau
+ */
 @CompileStatic
 class ContextGroovyMethods {
     static NotificationManagerCompat getCompatNotificationManager(Context self) {
